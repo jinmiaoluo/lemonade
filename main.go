@@ -31,6 +31,16 @@ func main() {
 
 func Do(c *lemon.CLI, args []string) int {
 	logger := log.New()
+	// set logger write log handler
+	//const (
+	//	LvlCrit Lvl = iota
+	//	LvlError
+	//	LvlWarn
+	//	LvlInfo
+	//	LvlDebug
+	//)
+	// only write less than special level log
+	// LvlError is default level
 	logger.SetHandler(log.LvlFilterHandler(log.LvlError, log.StdoutHandler))
 
 	if err := c.FlagParse(args, false); err != nil {
@@ -38,9 +48,12 @@ func Do(c *lemon.CLI, args []string) int {
 		return lemon.FlagParseError
 	}
 
+	// override default log level
 	logLevel := logLevelMap[c.LogLevel]
 	logger.SetHandler(log.LvlFilterHandler(logLevel, log.StdoutHandler))
 
+	// if user wanna help message
+	// just use lemonade --help to do that
 	if c.Help {
 		fmt.Fprint(c.Err, lemon.Usage)
 		return lemon.Help

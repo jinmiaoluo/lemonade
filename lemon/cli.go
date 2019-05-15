@@ -4,7 +4,7 @@ import "io"
 
 type CommandType int
 
-// Commands
+// Commands type const to represent command type
 const (
 	OPEN CommandType = iota + 1
 	COPY
@@ -12,6 +12,7 @@ const (
 	SERVER
 )
 
+// return 0 10 20 30 as special err codes
 const (
 	Success        = 0
 	FlagParseError = iota + 10
@@ -26,17 +27,18 @@ const (
 	SUBCOMMAND
 )
 
+// cli struct is used for store info pased from cli
 type CLI struct {
-	In       io.Reader
-	Out, Err io.Writer
+	In       io.Reader // todo
+	Out, Err io.Writer // todo
 
 	Type       CommandType
 	DataSource string
 
 	// options
-	Port           int
+	Port           int // server port
 	Allow          string
-	Host           string
+	Host           string // server address
 	TransLoopback  bool
 	TransLocalfile bool
 	LineEnding     string

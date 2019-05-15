@@ -15,6 +15,7 @@ import (
 	"github.com/lemonade-command/lemonade/server"
 )
 
+// client struct
 type client struct {
 	host               string
 	port               int
@@ -23,6 +24,9 @@ type client struct {
 	logger             log.Logger
 }
 
+// parse CLI struct instance and logger struct instance comes from log15 package
+// return a client struct instance
+// use the value comes from  CLI struct as client struct's value
 func New(c *lemon.CLI, logger log.Logger) *client {
 	return &client{
 		host:               c.Host,
@@ -35,12 +39,17 @@ func New(c *lemon.CLI, logger log.Logger) *client {
 
 var dummy = &struct{}{}
 
+// if fname is a file name
 func fileExists(fname string) bool {
 	_, err := os.Stat(fname)
 	return err == nil
 }
 
+// parse file name
+// return server address, channel receiver, and error
 func serveFile(fname string) (string, <-chan struct{}, error) {
+	// create a TCP listener
+	// this listener is announces with two basic info
 	l, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return "", nil, err
@@ -48,7 +57,9 @@ func serveFile(fname string) (string, <-chan struct{}, error) {
 	finished := make(chan struct{})
 
 	go func() {
+		// send data with http
 		http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// convert file to []byte
 			b, err := ioutil.ReadFile(fname)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -57,6 +68,7 @@ func serveFile(fname string) (string, <-chan struct{}, error) {
 			w.Write(b)
 
 			w.(http.Flusher).Flush()
+			//
 			finished <- struct{}{}
 		}))
 	}()
@@ -64,8 +76,14 @@ func serveFile(fname string) (string, <-chan struct{}, error) {
 	return fmt.Sprintf("http://127.0.0.1:%d/%s", l.Addr().(*net.TCPAddr).Port, fname), finished, nil
 }
 
+//
 func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
+	// create a variable to due with channel receive operation
+	// receive a struct from send operation
 	var finished <-chan struct{}
+
+	// if transLocalfile is true and CLI.DataSource is file
+	// serve file
 	if transLocalfile && fileExists(uri) {
 		var err error
 		uri, finished, err = serveFile(uri)
@@ -74,6 +92,7 @@ func (c *client) Open(uri string, transLocalfile, transLoopback bool) error {
 		}
 	}
 
+	// if CLI.DataSource not file
 	c.logger.Info("Opening " + uri)
 	err := c.withRPCClient(func(rc *rpc.Client) error {
 		p := &param.OpenParam{
@@ -133,6 +152,7 @@ func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	return nil
 }
 
+//
 func (c *client) fallbackLocal() (*rpc.Client, error) {
 	port, err := server.ServeLocal(c.logger)
 	server.LineEndingOpt = c.lineEnding
