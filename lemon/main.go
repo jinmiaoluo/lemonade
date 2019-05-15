@@ -6,8 +6,9 @@ import (
 	"strings"
 )
 
-// 声明版本的变量
-// 版本变量可以在其他包内访问
+// declare lemonade version info
+// exported variable for visiting
+// use `go -ldflags` to override
 var Version string
 
 // 初始化用法的输出信息
