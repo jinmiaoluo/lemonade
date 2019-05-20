@@ -41,6 +41,9 @@ var dummy = &struct{}{}
 
 // if fname is a file name
 func fileExists(fname string) bool {
+	// do not care about fileStat
+	// if current string is a path
+	// return nil
 	_, err := os.Stat(fname)
 	return err == nil
 }
