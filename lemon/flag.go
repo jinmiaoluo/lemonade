@@ -35,6 +35,7 @@ func (c *CLI) FlagParse(args []string, skip bool) error {
 // reture comamnd type and error
 func (c *CLI) getCommandType(args []string) (s CommandStyle, err error) {
 	s = ALIAS
+	// return if lemonade is used as a alias
 	switch {
 	case regexp.MustCompile(`/?xdg-open$`).MatchString(args[0]): // if use lemonade as a alias. what alias it is
 		c.Type = OPEN

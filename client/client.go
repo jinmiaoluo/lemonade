@@ -37,6 +37,7 @@ func New(c *lemon.CLI, logger log.Logger) *client {
 	}
 }
 
+// no size struct{} type dummy data
 var dummy = &struct{}{}
 
 // if fname is a file name

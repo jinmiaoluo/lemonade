@@ -24,6 +24,8 @@ func main() {
 	cli := &lemon.CLI{
 		In:  os.Stdin,
 		Out: os.Stdout,
+		// default error message will be sent to user as stderr
+		// help will be sent to user as stderr
 		Err: os.Stderr,
 	}
 	os.Exit(Do(cli, os.Args))
@@ -59,6 +61,7 @@ func Do(c *lemon.CLI, args []string) int {
 		return lemon.Help
 	}
 
+	// init a client
 	lc := client.New(c, logger)
 	var err error
 

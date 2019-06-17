@@ -19,6 +19,7 @@ func Serve(c *lemon.CLI, logger log.Logger) error {
 	port := c.Port
 	allowIP := c.Allow
 	LineEndingOpt = c.LineEnding
+	// default allowIP's value is 0.0.0.0/0,::/0
 	ra, err := iprange.New(allowIP)
 	if err != nil {
 		return err
