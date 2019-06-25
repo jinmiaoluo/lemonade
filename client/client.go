@@ -131,11 +131,15 @@ func (c *client) Paste() (string, error) {
 
 func (c *client) Copy(text string) error {
 	c.logger.Debug("Sending: " + text)
+	// withRPCClient method will call use a function as parameter
+	// define a function when call
 	return c.withRPCClient(func(rc *rpc.Client) error {
 		return rc.Call("Clipboard.Copy", text, dummy)
 	})
 }
 
+// withRPCClient method will call use a function as parameter
+// define withRPCClient method with a function parameter with function signature
 func (c *client) withRPCClient(f func(*rpc.Client) error) error {
 	rc, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", c.host, c.port))
 	if err != nil {

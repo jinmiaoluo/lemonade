@@ -57,13 +57,18 @@ func ServeLocal(logger log.Logger) (int, error) {
 		return 0, err
 	}
 	go func() {
+		// for loop for continuing serving request
 		for {
 			conn, err := l.Accept()
 			if err != nil {
 				logger.Crit(err.Error())
 				continue
 			}
+			// synchronize with special action
+			// for example Clipboard.Copy
 			connCh <- conn
+
+			// return result as a response
 			rpc.ServeConn(conn)
 		}
 	}()
