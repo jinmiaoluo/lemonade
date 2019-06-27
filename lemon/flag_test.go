@@ -12,6 +12,9 @@ func TestCLIParse(t *testing.T) {
 		c := &CLI{In: os.Stdin}
 		c.FlagParse(args, true)
 
+		//Pointer values are deeply equal if they are equal using Go's == operator or if
+		//they point to deeply equal values.
+
 		if !reflect.DeepEqual(expected, *c) {
 			t.Errorf("Expected:\n %+v, but got\n %+v", expected, c)
 		}
